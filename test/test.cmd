@@ -1,0 +1,1 @@
+..\\src\\Release\\main.exe --vocabulary test_vocabulary.txt --words test_words.txt --output output.txt
