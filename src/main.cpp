@@ -40,7 +40,30 @@ int main(int argc, char* argv[])
 		std::vector<std::string> vocabulary = load_words(vocabulary_file_name);
 		std::vector<std::string> word_list = load_words(word_list_file_name);
 
-		write_closest_to_file(output_file_name, word_list, vocabulary);
+		std::vector<std::string> vocabulary_no_duplicates;
+		// Remove duplicates
+		for (unsigned int i = 0; i < vocabulary.size(); i++)
+		{
+			bool duplicate_found = false;
+			for (unsigned int j = 0; j < vocabulary_no_duplicates.size(); j++)
+			{
+				if (vocabulary[i] == vocabulary_no_duplicates[j])
+				{
+					duplicate_found = true;
+					break;
+				}
+			}
+
+			if (!duplicate_found)
+			{
+				vocabulary_no_duplicates.push_back(vocabulary[i]);
+			}
+
+		}
+
+		vocabulary.clear();
+
+		write_closest_to_file(output_file_name, word_list, vocabulary_no_duplicates);
 	}
 
 }
