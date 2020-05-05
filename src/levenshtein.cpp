@@ -50,6 +50,8 @@ std::vector<int> find_closest(const std::vector<std::string>& words, const std::
 {
 	std::vector<int> idx_vocabulary(words.size(),-1);
 
+	std::map<std::string, int> already_processed;
+
 	const int words_len = words.size();
 	const int vocabulary_len = vocabulary.size();
 
@@ -58,15 +60,32 @@ std::vector<int> find_closest(const std::vector<std::string>& words, const std::
 	{
 		int dist_closest = INT_MAX;
 		int idx_closest = -1;
-		for (int j = 0; j < vocabulary_len; j++)
+
+		#pragma omp critical
 		{
-			int dist = levenshtein_distance(words[i], vocabulary[j]);
-			if (dist < dist_closest)
-			{
-				dist_closest = dist;
-				idx_closest = j;
+			if (already_processed.count(words[i])) {
+				idx_closest = already_processed[words[i]];
 			}
 		}
+
+		if (idx_closest < 0)
+		{
+			for (int j = 0; j < vocabulary_len; j++)
+			{
+				int dist = levenshtein_distance(words[i], vocabulary[j]);
+				if (dist < dist_closest)
+				{
+					dist_closest = dist;
+					idx_closest = j;
+				}
+			}
+		}
+
+		#pragma omp critical
+		{
+			already_processed[words[i]] = idx_closest;
+		}
+
 		idx_vocabulary[i] = idx_closest;
 	}
 

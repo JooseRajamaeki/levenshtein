@@ -11,6 +11,8 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <map>
+#include <omp.h>
 
 int levenshtein_distance(const std::string& string1, const std::string& string2);
 std::vector<int> find_closest(const std::vector<std::string>& words, const std::vector<std::string>& vocabulary);
